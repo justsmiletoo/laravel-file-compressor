@@ -1,6 +1,6 @@
 {
     "name": "justsmiletoo/laravel-file-compressor",
-    "description": "Automatically compress images, PDFs and videos on upload in Laravel. Auto-detects MIME type and applies the right compressor.",
+    "description": "Automatically compress images, PDFs and videos on upload in Laravel. Auto-detects MIME type and applies the right compressor with zero configuration.",
     "keywords": [
         "laravel",
         "compression",
