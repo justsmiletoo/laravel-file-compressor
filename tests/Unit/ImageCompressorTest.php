@@ -67,3 +67,66 @@ it('respects max dimension options', function () {
 
     @unlink($result->path);
 });
+
+it('applies cover mode for cropping', function () {
+    $fixturePath = $this->fixturePath('sample.jpg');
+
+    if (! file_exists($fixturePath)) {
+        $this->markTestSkipped('Test fixture sample.jpg not found.');
+    }
+
+    $result = $this->compressor->compress($fixturePath, [
+        'max_width' => 200,
+        'max_height' => 200,
+        'mode' => 'cover',
+    ]);
+
+    expect(file_exists($result->path))->toBeTrue()
+        ->and($result->compressedSize)->toBeGreaterThan(0);
+
+    $info = getimagesize($result->path);
+    expect($info[0])->toBe(200)
+        ->and($info[1])->toBe(200);
+
+    @unlink($result->path);
+});
+
+it('applies preset options', function () {
+    $fixturePath = $this->fixturePath('sample.jpg');
+
+    if (! file_exists($fixturePath)) {
+        $this->markTestSkipped('Test fixture sample.jpg not found.');
+    }
+
+    $result = $this->compressor->compress($fixturePath, ['preset' => 'avatar']);
+
+    expect(file_exists($result->path))->toBeTrue();
+
+    $info = getimagesize($result->path);
+    expect($info[0])->toBe(200)
+        ->and($info[1])->toBe(200);
+
+    @unlink($result->path);
+});
+
+it('allows preset overrides', function () {
+    $fixturePath = $this->fixturePath('sample.jpg');
+
+    if (! file_exists($fixturePath)) {
+        $this->markTestSkipped('Test fixture sample.jpg not found.');
+    }
+
+    $result = $this->compressor->compress($fixturePath, [
+        'preset' => 'avatar',
+        'max_width' => 100,
+        'max_height' => 100,
+    ]);
+
+    expect(file_exists($result->path))->toBeTrue();
+
+    $info = getimagesize($result->path);
+    expect($info[0])->toBe(100)
+        ->and($info[1])->toBe(100);
+
+    @unlink($result->path);
+});

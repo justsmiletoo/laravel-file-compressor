@@ -42,16 +42,23 @@ class ImageCompressor implements CompressorInterface
             throw new CompressionException("Unable to detect MIME type: {$filePath}");
         }
 
+        $options = $this->resolvePreset($options);
+
         $quality = $options['quality'] ?? $this->config['quality'];
         $maxWidth = $options['max_width'] ?? $this->config['max_width'];
         $maxHeight = $options['max_height'] ?? $this->config['max_height'];
+        $mode = $options['mode'] ?? $this->config['mode'] ?? 'scale';
         $convertTo = $options['convert_to'] ?? $this->config['convert_to'];
 
         $driver = $this->resolveDriver();
         $manager = new ImageManager($driver);
         $image = $manager->read($filePath);
 
-        $image->scaleDown(width: $maxWidth, height: $maxHeight);
+        if ($mode === 'cover') {
+            $image->cover(width: $maxWidth, height: $maxHeight);
+        } else {
+            $image->scaleDown(width: $maxWidth, height: $maxHeight);
+        }
 
         $encoder = $this->resolveEncoder($convertTo, $mimeType, $quality);
         $encoded = $image->encode($encoder);
@@ -85,6 +92,26 @@ class ImageCompressor implements CompressorInterface
     public function supports(string $mimeType): bool
     {
         return in_array($mimeType, $this->config['supported_mimes'], true);
+    }
+
+    /**
+     * @param  array<string, mixed>  $options
+     * @return array<string, mixed>
+     */
+    private function resolvePreset(array $options): array
+    {
+        $presetName = $options['preset'] ?? null;
+
+        if ($presetName === null) {
+            return $options;
+        }
+
+        unset($options['preset']);
+
+        $presets = $this->config['presets'] ?? [];
+        $preset = $presets[$presetName] ?? [];
+
+        return array_merge($preset, $options);
     }
 
     private function resolveDriver(): GdDriver|ImagickDriver

@@ -42,12 +42,30 @@ return [
         'quality' => (int) env('FILE_COMPRESSOR_IMAGE_QUALITY', 80),
         'max_width' => (int) env('FILE_COMPRESSOR_IMAGE_MAX_WIDTH', 1920),
         'max_height' => (int) env('FILE_COMPRESSOR_IMAGE_MAX_HEIGHT', 1080),
+        'mode' => 'scale', // 'scale' (proportional) or 'cover' (crop to fill)
         'convert_to' => env('FILE_COMPRESSOR_IMAGE_CONVERT_TO'), // null, 'webp', 'jpg', 'png'
         'supported_mimes' => [
             'image/jpeg',
             'image/png',
             'image/gif',
             'image/webp',
+        ],
+
+        /*
+        |--------------------------------------------------------------------------
+        | Image Presets
+        |--------------------------------------------------------------------------
+        |
+        | Named presets for common use cases. Use via options: ['preset' => 'avatar'].
+        | Preset values override the defaults above. Any option not set in the
+        | preset falls back to the default config.
+        |
+        */
+
+        'presets' => [
+            'avatar' => ['max_width' => 200, 'max_height' => 200, 'mode' => 'cover', 'quality' => 80],
+            'thumbnail' => ['max_width' => 300, 'max_height' => 300, 'mode' => 'cover', 'quality' => 80],
+            'banner' => ['max_width' => 1920, 'max_height' => 600, 'mode' => 'scale', 'quality' => 85],
         ],
     ],
 

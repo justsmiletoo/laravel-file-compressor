@@ -86,16 +86,67 @@ $result = FileCompressor::compressPdf($file);
 $result = FileCompressor::compressVideo($file);
 ```
 
+### Presets
+
+Use named presets for common image use cases:
+
+```php
+// Uses the 'avatar' preset: 200x200, cover mode, quality 80
+$result = FileCompressor::compressImage($file, ['preset' => 'avatar']);
+
+// Uses 'banner' preset: 1920xAuto, scale mode, quality 85
+$result = FileCompressor::compressImage($file, ['preset' => 'banner']);
+
+// Override a preset value
+$result = FileCompressor::compressImage($file, [
+    'preset' => 'avatar',
+    'max_width' => 300,
+    'max_height' => 300,
+]);
+```
+
+Define your own presets in the config:
+
+```php
+// config/file-compressor.php
+'image' => [
+    'presets' => [
+        'avatar' => ['max_width' => 200, 'max_height' => 200, 'mode' => 'cover', 'quality' => 80],
+        'thumbnail' => ['max_width' => 300, 'max_height' => 300, 'mode' => 'cover', 'quality' => 80],
+        'banner' => ['max_width' => 1920, 'max_height' => 600, 'mode' => 'scale', 'quality' => 85],
+        'receipt' => ['max_width' => 1200, 'mode' => 'scale', 'quality' => 80, 'convert_to' => 'webp'],
+    ],
+],
+```
+
+### Resize modes
+
+- **`scale`** (default) — Proportionally scale down. Never upscales. Aspect ratio preserved.
+- **`cover`** — Crop and resize to fill exact dimensions (like CSS `object-fit: cover`).
+
+```php
+// Scale down proportionally
+$result = FileCompressor::compressImage($file, ['mode' => 'scale']);
+
+// Crop to exact 200x200
+$result = FileCompressor::compressImage($file, [
+    'max_width' => 200,
+    'max_height' => 200,
+    'mode' => 'cover',
+]);
+```
+
 ### Per-call options
 
 Override config values for a single call:
 
 ```php
-// Smaller avatar
+// Smaller avatar with WebP conversion
 $result = FileCompressor::compressImage($file, [
     'max_width' => 400,
     'max_height' => 400,
     'quality' => 70,
+    'convert_to' => 'webp',
 ]);
 
 // High-quality PDF
@@ -180,7 +231,9 @@ FileCompressor::isEnabled();               // true (unless disabled in config)
 | `image.quality` | `80` | JPEG/WebP quality (1-100). |
 | `image.max_width` | `1920` | Max width in pixels. Aspect ratio preserved. |
 | `image.max_height` | `1080` | Max height in pixels. Aspect ratio preserved. |
+| `image.mode` | `scale` | Resize mode: `scale` (proportional) or `cover` (crop to fill). |
 | `image.convert_to` | `null` | Convert format: `null` (keep original), `webp`, `jpg`, `png`. |
+| `image.presets` | `[...]` | Named presets with per-preset options. See [Presets](#presets). |
 | **PDF** | | |
 | `pdf.binary` | `gs` | Path to the Ghostscript binary. |
 | `pdf.quality` | `ebook` | Preset: `screen` (72dpi), `ebook` (150dpi), `printer` (300dpi), `prepress`. |
