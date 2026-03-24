@@ -10,8 +10,10 @@ use JustSmileToo\FileCompressor\Compressors\ImageCompressor;
 use JustSmileToo\FileCompressor\Compressors\PdfCompressor;
 use JustSmileToo\FileCompressor\Compressors\VideoCompressor;
 use JustSmileToo\FileCompressor\Dto\CompressionResult;
+use JustSmileToo\FileCompressor\Dto\UploadResult;
 use JustSmileToo\FileCompressor\Exceptions\CompressionException;
 use JustSmileToo\FileCompressor\Exceptions\UnsupportedFileTypeException;
+use JustSmileToo\FileCompressor\Storage\StorageManager;
 use SplFileInfo;
 
 class FileCompressor
@@ -29,6 +31,7 @@ class FileCompressor
         ImageCompressor $imageCompressor,
         PdfCompressor $pdfCompressor,
         VideoCompressor $videoCompressor,
+        private readonly StorageManager $storage,
         array $config,
     ) {
         $this->compressors = [$imageCompressor, $pdfCompressor, $videoCompressor];
@@ -107,6 +110,68 @@ class FileCompressor
     }
 
     /**
+     * Compress and store a file in one call. Returns the storage path.
+     *
+     * @param  array<string, mixed>  $options  Compressor options (preset, quality, max_width, etc.)
+     */
+    public function upload(UploadedFile|SplFileInfo|string $file, string $folder, array $options = []): UploadResult
+    {
+        $filePath = $this->resolveFilePath($file);
+        $mimeType = $this->resolveMimeType($file, $filePath);
+
+        if ($this->isEnabled() && $this->isSupported($mimeType)) {
+            $result = $this->compress($file, $options);
+            $extension = $this->resolveOutputExtension($result, $options, $filePath);
+            $storagePath = $this->storage->store($result->path, $folder, $extension);
+            @unlink($result->path);
+
+            return new UploadResult(
+                path: $storagePath,
+                originalSize: $result->originalSize,
+                compressedSize: $result->compressedSize,
+                mimeType: $result->mimeType,
+                wasCompressed: $result->wasCompressed,
+            );
+        }
+
+        $extension = pathinfo($filePath, PATHINFO_EXTENSION) ?: null;
+        $storagePath = $this->storage->store($filePath, $folder, $extension);
+        $size = filesize($filePath) ?: 0;
+
+        return new UploadResult(
+            path: $storagePath,
+            originalSize: $size,
+            compressedSize: $size,
+            mimeType: $mimeType,
+            wasCompressed: false,
+        );
+    }
+
+    /**
+     * Delete a file from the configured storage disk.
+     */
+    public function delete(?string $path): bool
+    {
+        return $this->storage->delete($path);
+    }
+
+    /**
+     * Get the public URL of a stored file.
+     */
+    public function url(?string $path): ?string
+    {
+        return $this->storage->url($path);
+    }
+
+    /**
+     * Check if a file exists on the configured storage disk.
+     */
+    public function exists(?string $path): bool
+    {
+        return $this->storage->exists($path);
+    }
+
+    /**
      * @param  class-string<CompressorInterface>  $compressorClass
      * @param  array<string, mixed>  $options
      */
@@ -162,6 +227,30 @@ class FileCompressor
         }
 
         throw UnsupportedFileTypeException::make($mimeType);
+    }
+
+    /**
+     * @param  array<string, mixed>  $options
+     */
+    private function resolveOutputExtension(CompressionResult $result, array $options, string $originalPath): string
+    {
+        $convertTo = $options['convert_to'] ?? null;
+
+        if ($convertTo !== null) {
+            return $convertTo === 'jpeg' ? 'jpg' : $convertTo;
+        }
+
+        if (isset($options['preset'])) {
+            $presets = $this->config['image']['presets'] ?? [];
+            $preset = $presets[$options['preset']] ?? [];
+            $presetConvert = $preset['convert_to'] ?? null;
+
+            if ($presetConvert !== null) {
+                return $presetConvert === 'jpeg' ? 'jpg' : $presetConvert;
+            }
+        }
+
+        return pathinfo($result->path, PATHINFO_EXTENSION) ?: (pathinfo($originalPath, PATHINFO_EXTENSION) ?: 'bin');
     }
 
     private function noopResult(string $filePath, string $mimeType): CompressionResult

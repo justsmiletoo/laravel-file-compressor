@@ -28,6 +28,22 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Storage
+    |--------------------------------------------------------------------------
+    |
+    | Configure how compressed files are stored. The 'disk' should match
+    | a disk defined in your filesystems.php config. The 'naming' option
+    | controls how filenames are generated.
+    |
+    */
+
+    'storage' => [
+        'disk' => env('FILE_COMPRESSOR_DISK', 'public'),
+        'naming' => env('FILE_COMPRESSOR_NAMING', 'timestamp_hex'), // 'timestamp_hex', 'uuid', 'ulid'
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Image Compression
     |--------------------------------------------------------------------------
     |

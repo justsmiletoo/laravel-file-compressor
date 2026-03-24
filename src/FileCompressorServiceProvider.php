@@ -8,6 +8,7 @@ use Illuminate\Support\ServiceProvider;
 use JustSmileToo\FileCompressor\Compressors\ImageCompressor;
 use JustSmileToo\FileCompressor\Compressors\PdfCompressor;
 use JustSmileToo\FileCompressor\Compressors\VideoCompressor;
+use JustSmileToo\FileCompressor\Storage\StorageManager;
 
 class FileCompressorServiceProvider extends ServiceProvider
 {
@@ -36,11 +37,16 @@ class FileCompressorServiceProvider extends ServiceProvider
             return new VideoCompressor($config);
         });
 
+        $this->app->singleton(StorageManager::class, function ($app) {
+            return new StorageManager($app['config']->get('file-compressor.storage', []));
+        });
+
         $this->app->singleton(FileCompressor::class, function ($app) {
             return new FileCompressor(
                 $app->make(ImageCompressor::class),
                 $app->make(PdfCompressor::class),
                 $app->make(VideoCompressor::class),
+                $app->make(StorageManager::class),
                 $app['config']->get('file-compressor'),
             );
         });
