@@ -38,7 +38,7 @@ class PdfCompressor implements CompressorInterface
         $timeout = $options['timeout'] ?? $this->config['timeout'];
 
         if (! in_array($quality, self::VALID_QUALITIES, true)) {
-            throw new CompressionException("Invalid PDF quality preset: {$quality}. Valid: " . implode(', ', self::VALID_QUALITIES));
+            throw new CompressionException("Invalid PDF quality preset: {$quality}. Valid: ".implode(', ', self::VALID_QUALITIES));
         }
 
         $outputPath = $this->generateTempPath();
@@ -89,7 +89,7 @@ class PdfCompressor implements CompressorInterface
     {
         $binary = $this->config['binary'];
 
-        $finder = new ExecutableFinder();
+        $finder = new ExecutableFinder;
         $resolved = $finder->find($binary);
 
         if ($resolved === null) {
@@ -103,6 +103,6 @@ class PdfCompressor implements CompressorInterface
     {
         $tempDir = $this->config['temp_dir'] ?? sys_get_temp_dir();
 
-        return $tempDir . DIRECTORY_SEPARATOR . 'fc_' . uniqid() . '.pdf';
+        return $tempDir.DIRECTORY_SEPARATOR.'fc_'.uniqid().'.pdf';
     }
 }

@@ -90,8 +90,8 @@ class ImageCompressor implements CompressorInterface
     private function resolveDriver(): GdDriver|ImagickDriver
     {
         return match ($this->config['driver'] ?? 'gd') {
-            'imagick' => new ImagickDriver(),
-            default => new GdDriver(),
+            'imagick' => new ImagickDriver,
+            default => new GdDriver,
         };
     }
 
@@ -101,9 +101,9 @@ class ImageCompressor implements CompressorInterface
 
         return match ($format) {
             'jpg', 'jpeg' => new JpegEncoder(quality: $quality),
-            'png' => new PngEncoder(),
+            'png' => new PngEncoder,
             'webp' => new WebpEncoder(quality: $quality),
-            'gif' => new GifEncoder(),
+            'gif' => new GifEncoder,
             default => new AutoEncoder(quality: $quality),
         };
     }
@@ -148,6 +148,6 @@ class ImageCompressor implements CompressorInterface
     {
         $tempDir = $this->config['temp_dir'] ?? sys_get_temp_dir();
 
-        return $tempDir . DIRECTORY_SEPARATOR . 'fc_' . uniqid() . '.' . $extension;
+        return $tempDir.DIRECTORY_SEPARATOR.'fc_'.uniqid().'.'.$extension;
     }
 }

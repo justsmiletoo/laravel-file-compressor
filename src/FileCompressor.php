@@ -145,7 +145,7 @@ class FileCompressor
     private function resolveMimeType(UploadedFile|SplFileInfo|string $file, string $filePath): string
     {
         if ($file instanceof UploadedFile) {
-            return $file->getMimeType() ?? $file->getClientMimeType() ?? 'application/octet-stream';
+            return $file->getMimeType() ?: $file->getClientMimeType();
         }
 
         $mime = mime_content_type($filePath);

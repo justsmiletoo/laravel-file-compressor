@@ -13,7 +13,7 @@ class FileCompressorServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
-        $this->mergeConfigFrom(__DIR__ . '/../config/file-compressor.php', 'file-compressor');
+        $this->mergeConfigFrom(__DIR__.'/../config/file-compressor.php', 'file-compressor');
 
         $this->app->singleton(ImageCompressor::class, function ($app) {
             $config = $app['config']->get('file-compressor.image');
@@ -49,7 +49,7 @@ class FileCompressorServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->publishes([
-            __DIR__ . '/../config/file-compressor.php' => config_path('file-compressor.php'),
+            __DIR__.'/../config/file-compressor.php' => config_path('file-compressor.php'),
         ], 'file-compressor-config');
     }
 }

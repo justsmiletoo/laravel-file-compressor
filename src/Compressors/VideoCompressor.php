@@ -51,7 +51,7 @@ class VideoCompressor implements CompressorInterface
         $timeout = $options['timeout'] ?? $this->config['timeout'];
 
         if (! in_array($preset, self::VALID_PRESETS, true)) {
-            throw new CompressionException("Invalid video preset: {$preset}. Valid: " . implode(', ', self::VALID_PRESETS));
+            throw new CompressionException("Invalid video preset: {$preset}. Valid: ".implode(', ', self::VALID_PRESETS));
         }
 
         $outputPath = $this->generateTempPath();
@@ -104,7 +104,7 @@ class VideoCompressor implements CompressorInterface
     {
         $binary = $this->config['binary'];
 
-        $finder = new ExecutableFinder();
+        $finder = new ExecutableFinder;
         $resolved = $finder->find($binary);
 
         if ($resolved === null) {
@@ -118,6 +118,6 @@ class VideoCompressor implements CompressorInterface
     {
         $tempDir = $this->config['temp_dir'] ?? sys_get_temp_dir();
 
-        return $tempDir . DIRECTORY_SEPARATOR . 'fc_' . uniqid() . '.mp4';
+        return $tempDir.DIRECTORY_SEPARATOR.'fc_'.uniqid().'.mp4';
     }
 }

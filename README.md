@@ -1,5 +1,10 @@
 # Laravel File Compressor
 
+[![CI](https://github.com/justsmiletoo/laravel-file-compressor/actions/workflows/ci.yml/badge.svg)](https://github.com/justsmiletoo/laravel-file-compressor/actions/workflows/ci.yml)
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/justsmiletoo/laravel-file-compressor.svg)](https://packagist.org/packages/justsmiletoo/laravel-file-compressor)
+[![Total Downloads](https://img.shields.io/packagist/dt/justsmiletoo/laravel-file-compressor.svg)](https://packagist.org/packages/justsmiletoo/laravel-file-compressor)
+[![License](https://img.shields.io/packagist/l/justsmiletoo/laravel-file-compressor.svg)](https://packagist.org/packages/justsmiletoo/laravel-file-compressor)
+
 Automatically compress images, PDFs and videos on upload in Laravel. Auto-detects the MIME type and applies the right compressor — zero config needed.
 
 ## Requirements

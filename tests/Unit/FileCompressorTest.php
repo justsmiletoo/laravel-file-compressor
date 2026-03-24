@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use JustSmileToo\FileCompressor\FileCompressor;
 use JustSmileToo\FileCompressor\Exceptions\UnsupportedFileTypeException;
+use JustSmileToo\FileCompressor\FileCompressor;
 
 it('resolves from the container', function () {
     $compressor = app(FileCompressor::class);

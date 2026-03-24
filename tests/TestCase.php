@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace JustSmileToo\FileCompressor\Tests;
 
+use JustSmileToo\FileCompressor\Facades\FileCompressor;
 use JustSmileToo\FileCompressor\FileCompressorServiceProvider;
 use Orchestra\Testbench\TestCase as OrchestraTestCase;
 
@@ -19,12 +20,12 @@ abstract class TestCase extends OrchestraTestCase
     protected function getPackageAliases($app): array
     {
         return [
-            'FileCompressor' => \JustSmileToo\FileCompressor\Facades\FileCompressor::class,
+            'FileCompressor' => FileCompressor::class,
         ];
     }
 
     protected function fixturePath(string $filename): string
     {
-        return __DIR__ . '/Fixtures/' . $filename;
+        return __DIR__.'/Fixtures/'.$filename;
     }
 }

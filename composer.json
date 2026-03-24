@@ -28,8 +28,21 @@
         "intervention/image": "^3.0"
     },
     "require-dev": {
+        "laravel/pint": "^1.13",
         "orchestra/testbench": "^9.0|^10.0",
-        "pestphp/pest": "^3.0"
+        "pestphp/pest": "^3.0",
+        "phpstan/phpstan": "^2.1"
+    },
+    "scripts": {
+        "test": "vendor/bin/pest",
+        "lint": "vendor/bin/pint --test",
+        "fix": "vendor/bin/pint",
+        "analyse": "vendor/bin/phpstan analyse",
+        "check": [
+            "@lint",
+            "@analyse",
+            "@test"
+        ]
     },
     "autoload": {
         "psr-4": {
