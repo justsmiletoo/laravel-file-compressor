@@ -1,0 +1,11 @@
+/vendor/
+/node_modules/
+.env
+.phpunit.cache
+.phpunit.result.cache
+composer.lock
+.idea/
+.vscode/
+.DS_Store
+.claude/
+CLAUDE.md
