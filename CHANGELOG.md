@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.0](https://github.com/justsmiletoo/laravel-file-compressor/compare/v1.3.0...v1.4.0) (2026-05-19)
+
+
+### Features
+
+* support Laravel 13 ([1b877ab](https://github.com/justsmiletoo/laravel-file-compressor/commit/1b877ab9283537516a17235d6df227b5ba7d4761))
+
 ## [1.3.0](https://github.com/justsmiletoo/laravel-file-compressor/compare/v1.2.0...v1.3.0) (2026-03-24)
 
 
